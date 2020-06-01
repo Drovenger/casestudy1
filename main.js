@@ -7,19 +7,45 @@ let score_get = 0;
 let bullets = [];
 let targets = [];
 let g;
+
+setInterval(function () {
+    targets.push(new Target());
+}, 200); //tạo thêm bóng theo thời gian được gán (milisecond)
+
 let mouse = {
     x: canvas.width / 2,
     y: canvas.height / 2
 };
+
 let bull_start = {
     x: undefined,
     y: undefined,
     angle: undefined
 };
+
 canvas.addEventListener("mousemove", function (event) {
     mouse.x = event.clientX;//lấy vị trí chuột theo tọa độ
     mouse.y = event.clientY;
 })//khi di chuyển chuột thì vị trí chuột sẽ được cập nhật lại
+
+function Target() { //lớp mục tiêu
+    this.x = canvas.width;
+    this.y = canvas.height;
+    this.radius = Math.random() * 100 + 10;
+    this.ang = (canvas.height / 2) / canvas.width;
+    this.dx = -Math.random() * 10 - 3;
+    this.dy = 0;
+    this.color = "red";
+    this.draw = function () {
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius, Math.PI * 2, false);
+        c.strokeStyle = this.color;
+        c.lineWidth = 1;
+        c.stroke();
+        c.closePath();
+    }
+    this.draw();
+}
 
 function Gun() {
     this.x = 20;
