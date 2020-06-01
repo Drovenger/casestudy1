@@ -20,3 +20,10 @@ body {
     right: 10%;
     color: black;
 }
+
+#life_pos {
+    position: absolute;
+    top: 5%;
+    right: 10%;
+    color: red;
+}
