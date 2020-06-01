@@ -12,7 +12,7 @@ let g;
 
 setInterval(function () {
     targets.push(new Target());
-}, 200); //tạo thêm bóng theo thời gian được gán (milisecond)
+}, 300); //tạo thêm bóng theo thời gian được gán (milisecond)
 
 window.addEventListener("resize", function () {
     canvas.width = window.innerWidth;
