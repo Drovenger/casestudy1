@@ -194,7 +194,7 @@ function animate() { //tổng hợp hoạt cảnh
 
 function start() {
     alert("Chào mừng bạn đến với game bắn bóng!");
-    alert("Bắt đàu bạn sẽ có 10 mạng,\n" +
+    alert("Bắt đầu bạn sẽ có 10 mạng,\n" +
         "Mỗi lần bóng bay mất sẽ mất 1 mạng,\n" +
         "Mỗi khi đạt 500 điểm sẽ được thưởng 1 mạng");
     alert("Chúc các bạn vui vẻ!");
