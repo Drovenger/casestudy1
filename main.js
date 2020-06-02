@@ -5,28 +5,22 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let c = canvas.getContext("2d");
 let score_get = 0;
-let life_get = 3;
+let life_get = 10;
 let bullets = [];
 let targets = [];
 let g;
 
 setInterval(function () {
     targets.push(new Target());
-}, 300); //tạo thêm bóng theo thời gian được gán (milisecond)
+}, 1000); //tạo thêm bóng theo thời gian được gán (milisecond)
 
-window.addEventListener("resize", function () {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    init();
-});
-
-function distance(x1, y1, x2, y2) {
+function distance(x1, y1, x2, y2) {// hàm tính tọa độ giữa 2 điểm trên màn hình
     let x_d = x2 - x1;
     let y_d = y2 - y1;
     return (Math.sqrt(Math.pow(x_d, 2) + Math.pow(y_d, 2)));
 }
 
-let mouse = {
+let mouse = { //tọa độ con trỏ chuột
     x: canvas.width / 2,
     y: canvas.height / 2
 };
@@ -46,11 +40,11 @@ canvas.addEventListener("mousemove", function (event) {
     mouse.y = event.clientY;
 });//khi di chuyển chuột thì vị trí chuột sẽ được cập nhật lại
 
-function getRandomHex() {
+function getRandomHex() {//hàm xử lý random màu
     return Math.floor(Math.random() * 255);
 }
 
-function getRandomColor() {
+function getRandomColor() {// hàm xử lý random màu
     let red = getRandomHex();
     let green = getRandomHex();
     let blue = getRandomHex();
@@ -58,13 +52,13 @@ function getRandomColor() {
 }
 
 function Target() { //lớp mục tiêu
-    this.x = canvas.width;
+    this.x = canvas.width;// vị trí cơ bản
     this.y = canvas.height;
-    this.radius = Math.random() * 100 + 10;
-    this.ang = (canvas.height / 2) / canvas.width;
-    this.dx = -Math.random() * 10 - 3;
+    this.radius = Math.random() * 100 + 10;// random kích thước
+    this.ang = Math.random();//(canvas.height / 2) / canvas.width;
+    this.dx = -Math.random() * 10 - 3;//random tốc độ di chuyển của mục tiêu
     this.color = getRandomColor();
-    this.draw = function () {
+    this.draw = function () {// vẽ và xử lý chuyển động
         c.beginPath();
         c.arc(this.x, this.y, this.radius, Math.PI * 2, 0, false);
         c.fillStyle = this.color;
@@ -76,26 +70,26 @@ function Target() { //lớp mục tiêu
     }
     this.update = function (bullets, targets) {
         let target_index = 0;
-        for (let i = 0; i < targets.length; i++) {
+        for (let i = 0; i < targets.length; i++) {//lấy vị trí trong mảng của mục tiêu
             if (this === targets[i]) {
                 target_index = i;
                 break;
             }
         }
-        for (let i = 0; i < bullets.length; i++) {
+        for (let i = 0; i < bullets.length; i++) {// xử lý va chạm, khi đạn chạm vào mục tiêu thì xóa cả 2
             if (distance(this.x, this.y, bullets[i].x, bullets[i].y) < (this.radius + bullets[i].radius)) {
                 bullets.splice(i, 1);
                 targets.splice(target_index, 1);
-                score_get += parseInt(100 - this.radius);
-                if (score_get > 1000) {
+                score_get += parseInt(200 - this.radius);//thưởng điểm
+                if (score_get > 500) {//xử lý thưởng mạng
                     life_get++;
-                    score_get = score_get - 1000;
+                    score_get = score_get - 500;
                 }
             }
         }
         this.x += this.dx;
-        this.y = this.ang * this.x + canvas.height / 4;
-        if (this.x < 0) {
+        this.y = this.ang * this.x + canvas.height / 10; // xử lý vị trí xuất hiện của mục tiêu
+        if (this.x < 0) {//phạt điểm, mạng
             targets.splice(target_index, 1);
             score_get -= parseInt(this.radius);
             life_get--;
@@ -105,14 +99,14 @@ function Target() { //lớp mục tiêu
 }
 
 function Bullet() {//lớp đạn
-    const velocity = 25;
+    const velocity = 25;// lực bắn
     this.x = bull_start.x;//khởi tạo vị trí ban đầu của viên đạn, đầu vòi súng
     this.y = bull_start.y;
     this.dx = Math.cos(bull_start.angle) * velocity;//tạo góc bắn
     this.dy = Math.sin(bull_start.angle) * velocity;
     this.color = "black";
     this.radius = 10;
-    this.gravity = 0.3;
+    this.gravity = 0.3;// lực hút cho đạn
     this.draw = function () {
         c.beginPath();
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
@@ -120,7 +114,7 @@ function Bullet() {//lớp đạn
         c.fill();
         c.closePath();
     }
-    this.update = function (bullets) {
+    this.update = function (bullets) {//lấy vị trí của phần tử đạn trong mảng
         let bullet_index = 0;
         for (let i = 0; i < bullets.length; i++) {
             if (this === bullets[i]) {
@@ -128,11 +122,11 @@ function Bullet() {//lớp đạn
                 break;
             }
         }
-        this.x += this.dx;
+        this.x += this.dx;//xử lý chuyển động của đạn
         this.y += this.dy;
         this.dy += this.gravity;
         if (this.x > canvas.width || this.y > canvas.height) {//khi đạn bay ra khỏi khung thì xóa nó khỏi mảng
-            score_get -= 5;
+            score_get -= 5;// và trừ điểm
             bullets.splice(bullet_index, 1);
         }
         this.draw();
@@ -155,8 +149,8 @@ function Gun() {//lớp súng
         c.stroke();
         c.closePath();
     }
-    this.update = function () {
-        const angle = -Math.atan2(canvas.height - mouse.y, mouse.x);
+    this.update = function () {//cập nhật góc bắn cho đạn, góc được tạo bởi góc của vòi súng
+        const angle = -Math.atan2(canvas.height - mouse.y, mouse.x);// góc bị ảnh hưởng bởi tọa độ chuột
         this.x = 35 + Math.cos(angle) * this.length;
         this.y = canvas.height - 35 + Math.sin(angle) * this.length;
         bull_start.x = this.x;
@@ -166,16 +160,8 @@ function Gun() {//lớp súng
     }
 }
 
-function init() {
-    bullets = [];
-    g = new Gun();
-}
-
-function set_score() {
+function set_score() {// xử lý hiện thị điểm
     score.innerHTML = score_get;
-}
-
-function set_life() {
     life.innerHTML = life_get;
 }
 
@@ -190,7 +176,6 @@ function animate() { //tổng hợp hoạt cảnh
         c.clearRect(0, 0, canvas.width, canvas.height);
         g.update();
         set_score();
-        set_life();
         c.beginPath();
         c.arc(0, canvas.height, 150, 0, 2 * Math.PI, false);
         c.fillStyle = "black";
@@ -209,11 +194,11 @@ function animate() { //tổng hợp hoạt cảnh
 
 function start() {
     alert("Chào mừng bạn đến với game bắn bóng!");
-    alert("Bắt đàu bạn sẽ có 3 mạng,\n" +
+    alert("Bắt đàu bạn sẽ có 10 mạng,\n" +
         "Mỗi lần bóng bay mất sẽ mất 1 mạng,\n" +
-        "Mỗi khi đạt 1000 điểm sẽ được thưởng 1 mạng");
+        "Mỗi khi đạt 500 điểm sẽ được thưởng 1 mạng");
     alert("Chúc các bạn vui vẻ!");
-    init();
+    g = new Gun();
     animate();
 }
 

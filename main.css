@@ -5,6 +5,8 @@ body {
 }
 
 #mycanvas {
+    width: window . innerWidth;
+    height: window . innerHeight;
     padding: 0;
     margin: 0;
     border: 1px solid black;
