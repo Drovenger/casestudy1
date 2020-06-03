@@ -10,6 +10,8 @@ let bullets = [];
 let targets = [];
 let g;
 let music = new Audio("DaftPunk.mp3");
+let shoot = new Audio("Gun13.wav");
+let explosion = new Audio("Explosion2.wav");
 
 setInterval(function () {
     targets.push(new Target());
@@ -33,6 +35,7 @@ let bull_start = { //biến vị trí và góc bắn viên đạn
 };
 
 canvas.addEventListener("click", function () {//mỗi khi lick chuột thì bắn một viên đạn
+    shoot.play();
     bullets.push(new Bullet());
 });
 
@@ -79,6 +82,7 @@ function Target() { //lớp mục tiêu
         }
         for (let i = 0; i < bullets.length; i++) {// xử lý va chạm, khi đạn chạm vào mục tiêu thì xóa cả 2
             if (distance(this.x, this.y, bullets[i].x, bullets[i].y) < (this.radius + bullets[i].radius)) {
+                explosion.play();
                 bullets.splice(i, 1);
                 targets.splice(target_index, 1);
                 score_get += parseInt(200 - this.radius);//thưởng điểm
