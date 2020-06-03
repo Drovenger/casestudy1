@@ -9,6 +9,7 @@ let life_get = 10;
 let bullets = [];
 let targets = [];
 let g;
+let music = new Audio("DaftPunk.mp3");
 
 setInterval(function () {
     targets.push(new Target());
@@ -193,6 +194,7 @@ function animate() { //tổng hợp hoạt cảnh
 }
 
 function start() {
+    music.play();
     alert("Chào mừng bạn đến với game bắn bóng!\n" +
         "Được tạo bởi Trần Công Minh, lớp C0520H1.");
     alert("Bắt đầu bạn sẽ có 10 mạng,\n" +
