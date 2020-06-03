@@ -193,7 +193,8 @@ function animate() { //tổng hợp hoạt cảnh
 }
 
 function start() {
-    alert("Chào mừng bạn đến với game bắn bóng!");
+    alert("Chào mừng bạn đến với game bắn bóng!\n" +
+        "Được tạo bởi Trần Công Minh, lớp C0520H1.");
     alert("Bắt đầu bạn sẽ có 10 mạng,\n" +
         "Mỗi lần bóng bay mất sẽ mất 1 mạng,\n" +
         "Mỗi khi đạt 500 điểm sẽ được thưởng 1 mạng");
