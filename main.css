@@ -43,3 +43,10 @@ body {
     right: 5%;
     color: black;
 }
+
+#bpm_pos {
+    position: absolute;
+    top: 20%;
+    right: 5%;
+    color: black;
+}

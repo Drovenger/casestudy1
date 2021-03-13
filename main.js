@@ -3,6 +3,7 @@ let max_score = document.getElementById("max_score");
 let score = document.getElementById("score");
 let life = document.getElementById("life");
 let balloons = document.getElementById("balloons");
+let bpm = document.getElementById("bpm");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let c = canvas.getContext("2d");
@@ -10,14 +11,19 @@ let max_score_get = 0;
 let score_get = 0;
 let life_get = 10;
 let balloon_get = 0;
+let total_balloons_get = 0;
 let timeout_score = 0;
+let damage = 20;
 let bullets = [];
 let targets = [];
 let g;
 let music = new Audio("DaftPunk.mp3");
 let shoot = new Audio("Gun13.wav");
 let explosion = new Audio("Explosion2.wav");
-let timeout = 5000;
+let timeout = 4000;
+let scale = 0.05;
+let timestamp = Date.now();
+let time = 0;
 
 let isShootPlaying = function () {
     return shoot
@@ -36,8 +42,10 @@ let isExplosionPlaying = function () {
 
 let createBalloon = function () {
     targets.push(new Target());
-    console.log(timeout);
+    time = (Date.now() - timestamp) / 1000;
+    bpm = total_balloons_get / (time / 60);
     balloon_get++;
+    total_balloons_get++;
 }
 
 let createBalloons = setInterval(createBalloon, timeout); //tạo thêm bóng theo thời gian được gán (milisecond)
@@ -116,8 +124,8 @@ function Target() { //lớp mục tiêu
         for (let i = 0; i < bullets.length; i++) {// xử lý va chạm, khi đạn chạm vào mục tiêu thì xóa cả 2
             if (distance(this.x, this.y, bullets[i].x, bullets[i].y) < (this.radius + bullets[i].radius)) {
                 if (this.hp > 20) {
-                    this.hp = this.hp - bullets[i].damage;
-                    this.radius = this.radius - bullets[i].damage;
+                    this.hp = this.hp - damage;
+                    this.radius = (this.radius - damage) >= 0 ? this.radius - damage : 0;
                 }
                 bullets.splice(i, 1);
                 if (this.hp <= 20) {
@@ -138,11 +146,11 @@ function Target() { //lớp mục tiêu
                 if (score_get > 500) {//xử lý thưởng mạng
                     life_get++;
                     score_get = score_get - 500;
+                    damage++;
                 }
                 if (timeout_score > 1000) {//tăng tốc độ tạo bóng
-                    console.log(timeout_score);
                     timeout_score -= 1000;
-                    timeout = timeout - (timeout * 0.1);
+                    timeout = timeout - (timeout * scale);
                     clearInterval(createBalloons);
                     createBalloons = setInterval(createBalloon, timeout);
                 }
@@ -162,7 +170,6 @@ function Target() { //lớp mục tiêu
 
 function Bullet() {//lớp đạn
     const velocity = 25;// lực bắn
-    this.damage = 20;
     this.x = bull_start.x;//khởi tạo vị trí ban đầu của viên đạn, đầu vòi súng
     this.y = bull_start.y;
     this.dx = Math.cos(bull_start.angle) * velocity;//tạo góc bắn
@@ -193,11 +200,6 @@ function Bullet() {//lớp đạn
             bullets.splice(bullet_index, 1);
         }
         this.draw();
-    }
-    this.increaseDamage = function () {
-        this.damage += 1;
-        score_get -= 100;
-        console.log(this.damage);
     }
 }
 
@@ -233,6 +235,7 @@ function set_score() {// xử lý hiện thị điểm
     score.innerHTML = score_get;
     life.innerHTML = life_get;
     balloons.innerHTML = balloon_get;
+    bpm.innerHTML = bpm;
 }
 
 function confirm() {
