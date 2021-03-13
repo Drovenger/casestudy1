@@ -12,10 +12,20 @@ let g;
 let music = new Audio("DaftPunk.mp3");
 let shoot = new Audio("Gun13.wav");
 let explosion = new Audio("Explosion2.wav");
+let timeout = 2000;
+
+var isPlaying = function () {
+    return shoot
+        && shoot.currentTime > 0
+        && !shoot.paused
+        && !shoot.ended
+        && shoot.readyState > 2;
+}
 
 setInterval(function () {
     targets.push(new Target());
-}, 1000); //tạo thêm bóng theo thời gian được gán (milisecond)
+    console.log(timeout);
+}, timeout); //tạo thêm bóng theo thời gian được gán (milisecond)
 
 function distance(x1, y1, x2, y2) {// hàm tính tọa độ giữa 2 điểm trên màn hình
     let x_d = x2 - x1;
@@ -35,7 +45,13 @@ let bull_start = { //biến vị trí và góc bắn viên đạn
 };
 
 canvas.addEventListener("click", function () {//mỗi khi lick chuột thì bắn một viên đạn
-    shoot.play();
+    if (isPlaying) {
+        shoot.pause();
+        shoot.currentTime = 0;
+        shoot.play();
+    } else {
+        shoot.play();
+    }
     bullets.push(new Bullet());
 });
 
@@ -58,9 +74,11 @@ function getRandomColor() {// hàm xử lý random màu
 function Target() { //lớp mục tiêu
     this.x = canvas.width;// vị trí cơ bản
     this.y = canvas.height;
-    this.radius = Math.random() * 100 + 10;// random kích thước
+    this.radius = Math.random() * 100 + 20;// random kích thước
+    this.point = this.radius;
+    this.hp = this.radius;
     this.ang = Math.random();//(canvas.height / 2) / canvas.width;
-    this.dx = -Math.random() * 10 - 3;//random tốc độ di chuyển của mục tiêu
+    this.dx = -Math.random() * 9 - 1;//random tốc độ di chuyển của mục tiêu
     this.color = getRandomColor();
     this.draw = function () {// vẽ và xử lý chuyển động
         c.beginPath();
@@ -82,13 +100,21 @@ function Target() { //lớp mục tiêu
         }
         for (let i = 0; i < bullets.length; i++) {// xử lý va chạm, khi đạn chạm vào mục tiêu thì xóa cả 2
             if (distance(this.x, this.y, bullets[i].x, bullets[i].y) < (this.radius + bullets[i].radius)) {
-                explosion.play();
                 bullets.splice(i, 1);
-                targets.splice(target_index, 1);
-                score_get += parseInt(200 - this.radius);//thưởng điểm
+                if (this.hp > 20) {
+                    this.hp = this.hp - bullets[i].damage;
+                    this.radius = this.radius - bullets[i].damage;
+                }
+                if (this.hp <= 20) {
+                    targets.splice(target_index, 1);
+                    score_get += parseInt(2000 - this.point);
+                    explosion.play();
+                }
+                //thưởng điểm
                 if (score_get > 500) {//xử lý thưởng mạng
                     life_get++;
                     score_get = score_get - 500;
+                    timeout = timeout - (timeout * 0.1);
                 }
             }
         }
@@ -105,6 +131,7 @@ function Target() { //lớp mục tiêu
 
 function Bullet() {//lớp đạn
     const velocity = 25;// lực bắn
+    this.damage = 20;
     this.x = bull_start.x;//khởi tạo vị trí ban đầu của viên đạn, đầu vòi súng
     this.y = bull_start.y;
     this.dx = Math.cos(bull_start.angle) * velocity;//tạo góc bắn
