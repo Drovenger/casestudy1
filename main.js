@@ -129,7 +129,7 @@ function Target() { //lớp mục tiêu
                 if (timeout_score > 1000) {//tăng tốc độ tạo bóng
                     console.log(timeout_score);
                     timeout_score -= 1000;
-                    timeout = timeout - (timeout * 0.01);
+                    timeout = timeout - (timeout * 0.1);
                     clearInterval(createBalloons);
                     createBalloons = setInterval(createBalloon, timeout);
                 }
