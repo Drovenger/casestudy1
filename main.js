@@ -22,10 +22,12 @@ var isPlaying = function () {
         && shoot.readyState > 2;
 }
 
-setInterval(function () {
+let createBalloon = function () {
     targets.push(new Target());
     console.log(timeout);
-}, timeout); //tạo thêm bóng theo thời gian được gán (milisecond)
+}
+
+let createBalloons = setInterval(createBalloon, timeout); //tạo thêm bóng theo thời gian được gán (milisecond)
 
 function distance(x1, y1, x2, y2) {// hàm tính tọa độ giữa 2 điểm trên màn hình
     let x_d = x2 - x1;
@@ -107,7 +109,7 @@ function Target() { //lớp mục tiêu
                 }
                 if (this.hp <= 20) {
                     targets.splice(target_index, 1);
-                    score_get += parseInt(2000 - this.point);
+                    score_get += parseInt(300 - this.point);
                     explosion.play();
                 }
                 //thưởng điểm
@@ -115,6 +117,8 @@ function Target() { //lớp mục tiêu
                     life_get++;
                     score_get = score_get - 500;
                     timeout = timeout - (timeout * 0.1);
+                    clearInterval(createBalloons);
+                    setInterval(createBalloon, timeout);
                 }
             }
         }
