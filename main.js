@@ -1,10 +1,13 @@
 let canvas = document.getElementById("mycanvas");
+let max_score = document.getElementById("max_score");
 let score = document.getElementById("score");
 let life = document.getElementById("life");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let c = canvas.getContext("2d");
+let max_score_get = 0;
 let score_get = 0;
+let timeout_score = 0;
 let life_get = 10;
 let bullets = [];
 let targets = [];
@@ -12,7 +15,7 @@ let g;
 let music = new Audio("DaftPunk.mp3");
 let shoot = new Audio("Gun13.wav");
 let explosion = new Audio("Explosion2.wav");
-let timeout = 2000;
+let timeout = 5000;
 
 var isPlaying = function () {
     return shoot
@@ -80,7 +83,7 @@ function Target() { //lớp mục tiêu
     this.point = this.radius;
     this.hp = this.radius;
     this.ang = Math.random();//(canvas.height / 2) / canvas.width;
-    this.dx = -Math.random() * 9 - 1;//random tốc độ di chuyển của mục tiêu
+    this.dx = -Math.random() * 7 - 2;//random tốc độ di chuyển của mục tiêu
     this.color = getRandomColor();
     this.draw = function () {// vẽ và xử lý chuyển động
         c.beginPath();
@@ -102,21 +105,27 @@ function Target() { //lớp mục tiêu
         }
         for (let i = 0; i < bullets.length; i++) {// xử lý va chạm, khi đạn chạm vào mục tiêu thì xóa cả 2
             if (distance(this.x, this.y, bullets[i].x, bullets[i].y) < (this.radius + bullets[i].radius)) {
-                bullets.splice(i, 1);
                 if (this.hp > 20) {
                     this.hp = this.hp - bullets[i].damage;
                     this.radius = this.radius - bullets[i].damage;
                 }
+                bullets.splice(i, 1);
                 if (this.hp <= 20) {
                     targets.splice(target_index, 1);
                     score_get += parseInt(300 - this.point);
+                    max_score_get += parseInt(300 - this.point);
+                    timeout_score += parseInt(300 - this.point);
                     explosion.play();
                 }
                 //thưởng điểm
                 if (score_get > 500) {//xử lý thưởng mạng
                     life_get++;
                     score_get = score_get - 500;
-                    timeout = timeout - (timeout * 0.1);
+                }
+                if (timeout_score > 1000) {//tăng tốc độ tạo bóng
+                    console.log(timeout_score);
+                    timeout_score -= 1000;
+                    timeout = timeout - (timeout * 0.01);
                     clearInterval(createBalloons);
                     setInterval(createBalloon, timeout);
                 }
@@ -126,7 +135,7 @@ function Target() { //lớp mục tiêu
         this.y = this.ang * this.x + canvas.height / 10; // xử lý vị trí xuất hiện của mục tiêu
         if (this.x < 0) {//phạt điểm, mạng
             targets.splice(target_index, 1);
-            score_get -= parseInt(this.radius);
+            // score_get -= parseInt(this.radius);
             life_get--;
         }
         this.draw();
@@ -167,6 +176,11 @@ function Bullet() {//lớp đạn
         }
         this.draw();
     }
+    this.increaseDamage = function () {
+        this.damage += 1;
+        score_get -= 100;
+        console.log(this.damage);
+    }
 }
 
 function Gun() {//lớp súng
@@ -197,6 +211,7 @@ function Gun() {//lớp súng
 }
 
 function set_score() {// xử lý hiện thị điểm
+    max_score.innerHTML = max_score_get;
     score.innerHTML = score_get;
     life.innerHTML = life_get;
 }
@@ -232,9 +247,12 @@ function start() {
     music.play();
     alert("Chào mừng bạn đến với game bắn bóng!\n" +
         "Được tạo bởi Trần Công Minh, lớp C0520H1.");
-    alert("Bắt đầu bạn sẽ có 10 mạng,\n" +
-        "Mỗi lần bóng bay mất sẽ mất 1 mạng,\n" +
-        "Mỗi khi đạt 500 điểm sẽ được thưởng 1 mạng");
+    alert("Hướng dẫn chơi game:\n" +
+        "- Di chuyển chuột để điều khiển nòng súng!\n" +
+        "- Click chuột để bắn!");
+    alert("- Khởi đầu bạn sẽ có 10 mạng,\n" +
+        "- Mỗi lần bóng bay mất sẽ mất 1 mạng,\n" +
+        "- Mỗi khi đạt 500 điểm sẽ được thưởng 1 mạng");
     alert("Chúc các bạn vui vẻ!");
     g = new Gun();
     animate();
