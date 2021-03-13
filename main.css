@@ -5,8 +5,8 @@ body {
 }
 
 #mycanvas {
-    width: window.innerWidth;
-    height: window.innerHeight;
+    width: window . innerWidth;
+    height: window . innerHeight;
     padding: 0;
     margin: 0;
     border: 1px solid black;
@@ -19,20 +19,27 @@ body {
 #max_score_pos {
     position: absolute;
     top: 0;
-    right: 10%;
-    color: black;
-}
-
-#score_pos {
-    position: absolute;
-    top: 10%;
-    right: 10%;
+    right: 5%;
     color: black;
 }
 
 #life_pos {
     position: absolute;
     top: 5%;
-    right: 10%;
+    right: 5%;
     color: red;
+}
+
+#score_pos {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    color: black;
+}
+
+#balloon_pos {
+    position: absolute;
+    top: 15%;
+    right: 5%;
+    color: black;
 }

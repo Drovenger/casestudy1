@@ -2,13 +2,15 @@ let canvas = document.getElementById("mycanvas");
 let max_score = document.getElementById("max_score");
 let score = document.getElementById("score");
 let life = document.getElementById("life");
+let balloons = document.getElementById("balloons");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let c = canvas.getContext("2d");
 let max_score_get = 0;
 let score_get = 0;
-let timeout_score = 0;
 let life_get = 10;
+let balloon_get = 0;
+let timeout_score = 0;
 let bullets = [];
 let targets = [];
 let g;
@@ -28,6 +30,7 @@ var isPlaying = function () {
 let createBalloon = function () {
     targets.push(new Target());
     console.log(timeout);
+    balloon_get++;
 }
 
 let createBalloons = setInterval(createBalloon, timeout); //tạo thêm bóng theo thời gian được gán (milisecond)
@@ -112,6 +115,7 @@ function Target() { //lớp mục tiêu
                 bullets.splice(i, 1);
                 if (this.hp <= 20) {
                     targets.splice(target_index, 1);
+                    balloon_get--;
                     score_get += parseInt(300 - this.point);
                     max_score_get += parseInt(300 - this.point);
                     timeout_score += parseInt(300 - this.point);
@@ -127,13 +131,14 @@ function Target() { //lớp mục tiêu
                     timeout_score -= 1000;
                     timeout = timeout - (timeout * 0.01);
                     clearInterval(createBalloons);
-                    setInterval(createBalloon, timeout);
+                    createBalloons = setInterval(createBalloon, timeout);
                 }
             }
         }
         this.x += this.dx;
         this.y = this.ang * this.x + canvas.height / 10; // xử lý vị trí xuất hiện của mục tiêu
         if (this.x < 0) {//phạt điểm, mạng
+            balloon_get--;
             targets.splice(target_index, 1);
             // score_get -= parseInt(this.radius);
             life_get--;
@@ -214,6 +219,7 @@ function set_score() {// xử lý hiện thị điểm
     max_score.innerHTML = max_score_get;
     score.innerHTML = score_get;
     life.innerHTML = life_get;
+    balloons.innerHTML = balloon_get;
 }
 
 function confirm() {
