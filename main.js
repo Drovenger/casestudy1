@@ -19,12 +19,19 @@ let shoot = new Audio("Gun13.wav");
 let explosion = new Audio("Explosion2.wav");
 let timeout = 5000;
 
-var isPlaying = function () {
+let isShootPlaying = function () {
     return shoot
         && shoot.currentTime > 0
         && !shoot.paused
         && !shoot.ended
         && shoot.readyState > 2;
+}
+let isExplosionPlaying = function () {
+    return explosion
+        && explosion.currentTime > 0
+        && !explosion.paused
+        && !explosion.ended
+        && explosion.readyState > 2;
 }
 
 let createBalloon = function () {
@@ -53,7 +60,7 @@ let bull_start = { //biến vị trí và góc bắn viên đạn
 };
 
 canvas.addEventListener("click", function () {//mỗi khi lick chuột thì bắn một viên đạn
-    if (isPlaying) {
+    if (isShootPlaying) {
         shoot.pause();
         shoot.currentTime = 0;
         shoot.play();
@@ -119,7 +126,13 @@ function Target() { //lớp mục tiêu
                     score_get += parseInt(300 - this.point);
                     max_score_get += parseInt(300 - this.point);
                     timeout_score += parseInt(300 - this.point);
-                    explosion.play();
+                    if (isExplosionPlaying) {
+                        explosion.pause();
+                        explosion.currentTime = 0;
+                        explosion.play();
+                    } else {
+                        explosion.play();
+                    }
                 }
                 //thưởng điểm
                 if (score_get > 500) {//xử lý thưởng mạng
