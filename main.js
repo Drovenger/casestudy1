@@ -9,7 +9,7 @@ canvas.height = window.innerHeight;
 let c = canvas.getContext("2d");
 let max_score_get = 0;
 let score_get = 0;
-let life_get = 10;
+let life_get = 3;
 let balloon_get = 0;
 let bpm_get = 0;
 let total_balloons_get = 0;
@@ -273,7 +273,7 @@ function start() {
     alert("Hướng dẫn chơi game:\n" +
         "- Di chuyển chuột để điều khiển nòng súng!\n" +
         "- Click chuột để bắn!");
-    alert("- Khởi đầu bạn sẽ có 10 mạng.\n" +
+    alert("- Khởi đầu bạn sẽ có 3 mạng.\n" +
         "- Mỗi lần bóng bay mất sẽ mất 1 mạng.\n" +
         "- Mỗi khi đạt 500 điểm sẽ được thưởng 1 mạng!");
     alert("Chúc các bạn chơi game vui vẻ!");
