@@ -21,7 +21,7 @@ let g;
 let music = new Audio("DaftPunk.mp3");
 let shoot = new Audio("Gun13.wav");
 let explosion = new Audio("Explosion2.wav");
-let timeout = 4000;
+let timeout = 3500;
 let scale = 0.075;
 let timestamp = Date.now();
 let time = 0;
